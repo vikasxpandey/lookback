@@ -61,7 +61,10 @@ const App = () => {
 						{!spotifyAccessToken && !spotifyRefreshToken ? (
 							<AuthSpotify />
 						) : (
-							<IntroSpotify spotify_access_token={spotifyAccessToken} />
+							<IntroSpotify
+								spotify_access_token={spotifyAccessToken}
+								setSpotifyAccessToken={setPhotosAccessToken}
+							/>
 						)}
 					</Grid>
 					<Grid style={{ background: '#fff' }} item sm={6} xs={12}>

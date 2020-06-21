@@ -26,23 +26,17 @@ const IntroPhotos = ({ photos_access_token }) => {
 				Authorization: 'Bearer ' + JSON.stringify(photos_access_token)
 			},
 			body: JSON.stringify({
-				pageSize: 21,
+				pageSize: 100,
 				filters: {
 					dateFilter: {
-						ranges: [
+						dates: [
 							{
-								startDate: {
-									year: 2020,
-									month: 1,
-									day: 1
-								},
-								endDate: {
-									year: 2020,
-									month: 6,
-									day: 20
-								}
+								year: 2020
 							}
 						]
+					},
+					mediaTypeFilter: {
+						mediaTypes: ['PHOTO']
 					}
 				}
 			})
@@ -62,9 +56,9 @@ const IntroPhotos = ({ photos_access_token }) => {
 
 	return (
 		<div className={classes.root}>
-			<GridList cellHeight={160} cols={2}>
-				{photos.map((tile) => (
-					<GridListTile key={tile.id} cols={tile.length || 1}>
+			<GridList cellHeight='auto' style={{ height: '100vh' }}>
+				{photos.reverse().map((tile) => (
+					<GridListTile key={tile.id}>
 						<img src={tile.baseUrl} alt={tile.filename} />
 					</GridListTile>
 				))}

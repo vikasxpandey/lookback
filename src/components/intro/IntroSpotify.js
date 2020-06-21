@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react'
 import {
 	Container,
 	Typography,
-	Box,
 	Card,
 	CardContent,
-	CardMedia
+	CardMedia,
+	GridList
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const IntroSpotify = ({ spotify_access_token }) => {
+const IntroSpotify = ({ spotify_access_token, setSpotifyAccessToken }) => {
 	const classes = useStyles()
 
 	const [songs, setSongs] = useState([])
@@ -50,10 +50,14 @@ const IntroSpotify = ({ spotify_access_token }) => {
 		})
 			.then((res) => res.json())
 			.then((res) => {
-				console.log(res)
-				setSongs(res.items)
+				if (res.error && res.error.status === 401) {
+					localStorage.clear()
+					setSpotifyAccessToken('')
+					window.location.href('/')
+				} else {
+					setSongs(res.items)
+				}
 			})
-			.catch((err) => console.log(err))
 	}
 
 	useEffect(() => {
@@ -61,9 +65,9 @@ const IntroSpotify = ({ spotify_access_token }) => {
 	}, [])
 
 	return (
-		<Container maxWidth='sm'>
+		<GridList cellHeight='auto' style={{ height: '100vh' }} cols={1}>
 			{songs.map((song) => (
-				<Box key={song.id}>
+				<Container maxWidth='xs' key={song.id}>
 					<Card className={classes.root}>
 						<CardContent>
 							<Typography variant='h5'>{song.name}</Typography>
@@ -82,6 +86,9 @@ const IntroSpotify = ({ spotify_access_token }) => {
 										artist.name + (index < song.artists.length - 1 ? ', ' : '')
 								)}
 							</Typography>
+							<audio controls>
+								<source src={song.preview_url} type='audio/mpeg' />
+							</audio>
 						</CardContent>
 						<CardMedia
 							className={classes.cover}
@@ -90,9 +97,9 @@ const IntroSpotify = ({ spotify_access_token }) => {
 							title={song.album.name}
 						/>
 					</Card>
-				</Box>
+				</Container>
 			))}
-		</Container>
+		</GridList>
 	)
 }
 
